@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Launch Panel - Sapthagiri Colony</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      height: 100vh;
+      background: linear-gradient(135deg, #020c1b, #001f3f);
+      background-size: 200% 200%;
+      animation: bgMove 20s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: #00ffc3;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass-panel {
+      backdrop-filter: blur(12px);
+      background-color: rgba(0, 255, 200, 0.05);
+      border: 2px solid #00ffc3;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #00ffe6;
+      padding: 60px;
+      text-align: center;
+      max-width: 800px;
+      width: 90%;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px #00ffe6;
+    }
+
+    .launch-btn {
+      font-size: 24px;
+      padding: 20px 60px;
+      border: 2px solid #00ffe6;
+      background: transparent;
+      color: #00ffe6;
+      border-radius: 40px;
+      cursor: pointer;
+      box-shadow: 0 0 25px #00ffe6, inset 0 0 12px #00ffe6;
+      transition: 0.4s ease;
+    }
+
+    .launch-btn:hover {
+      transform: scale(1.05);
+      background-color: rgba(0, 255, 230, 0.1);
+    }
+
+    #launchingMsg, #countdown, #liveMessage {
+      margin-top: 40px;
+      font-size: 28px;
+      display: none;
+    }
+
+    #countdown {
+      font-size: 100px;
+      color: #ffffff;
+      text-shadow: 0 0 25px #00ffff;
+    }
+
+    #launchingMsg {
+      animation: fadeIn 1s ease forwards;
+      color: #0ff;
+      text-shadow: 0 0 12px #0ff;
+    }
+
+    #liveMessage {
+      animation: flicker 1.5s infinite alternate;
+      color: #00ffcc;
+      text-shadow: 0 0 20px #00ffe7;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.9; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glass-panel">
+  <h1>🛸 SYSTEM READY FOR LAUNCH</h1>
+  <button class="launch-btn" id="launchBtn">Launch sapthagiricolony.in</button>
+  <div id="launchingMsg">🚀 Launching sapthagiricolony.in...</div>
+  <div id="countdown">5</div>
+  <div id="liveMessage">✅ Website is LIVE — Redirecting...</div>
+</div>
+
+<!-- AUDIO -->
+<audio id="ambient" preload="auto" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/10/03/audio_e9b4dfb749.mp3?filename=dark-suspense-background-121614.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="beep" preload="auto">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b4f35d3085.mp3?filename=beep-short-6766.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="rocket" preload="auto">
+  <source src="https://cdn.pixabay.com/download/audio/2022/01/19/audio_b0f738c2a6.mp3?filename=rocket-whoosh-110742.mp3" type="audio/mpeg">
+</audio>
+
+<!-- CONFETTI -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+  const launchBtn = document.getElementById("launchBtn");
+  const launchingMsg = document.getElementById("launchingMsg");
+  const countdown = document.getElementById("countdown");
+  const liveMessage = document.getElementById("liveMessage");
+
+  const ambient = document.getElementById("ambient");
+  const beep = document.getElementById("beep");
+  const rocket = document.getElementById("rocket");
+
+  launchBtn.addEventListener("click", () => {
+    try {
+      ambient.volume = 0.2;
+      ambient.load();
+      ambient.play().catch(() => {});
+      beep.volume = 1.0;
+      beep.load();
+      beep.play().catch(() => {});
+    } catch (err) {
+      console.log("Audio error:", err);
+    }
+
+    launchBtn.style.display = "none";
+    launchingMsg.style.display = "block";
+    countdown.style.display = "block";
+
+    let count = 5;
+    const timer = setInterval(() => {
+      countdown.textContent = count;
+      count--;
+
+      if (count < 0) {
+        clearInterval(timer);
+        countdown.style.display = "none";
+        launchingMsg.style.display = "none";
+        liveMessage.style.display = "block";
+
+        try {
+          rocket.volume = 1.0;
+          rocket.load();
+          rocket.play().catch(() => {});
+        } catch (err) {
+          console.log("Rocket audio error:", err);
+        }
+
+        confetti({
+          particleCount: 300,
+          spread: 100,
+          origin: { y: 0.6 }
+        });
+
+        setTimeout(() => {
+          window.location.href = "https://sapthagiricolony.in";
+        }, 3000);
+      }
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
